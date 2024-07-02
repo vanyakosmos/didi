@@ -1,10 +1,12 @@
-# didi
+# didi 👧💉
 
-The easies dependency injector framework.
+Stupidest dependency injection framework.
 
 ```python
 import didi
 from dataclasses import dataclass
+
+# APP
 
 @dataclass
 class Settings:
@@ -31,6 +33,8 @@ class Service:
         self.repo = repo
         self.api = api
 
+# COMPOSER
+        
 class Composer(didi.Composer):
     settings: Settings = didi.Config()
     db = didi.Singleton(Db, dsn=settings.db_dsn)
@@ -49,3 +53,11 @@ composer = Composer()
 composer.settings = Settings(db_dsn="http://db", api_base_url="http://api")
 service = composer.service()
 ```
+
+## TODO
+
+- add type annotations
+- add async support
+- add override utils
+- add shutdown routines
+- allow composition of composers
