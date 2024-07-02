@@ -58,10 +58,9 @@ def test_factory_resource():
             self.api = api
 
     class Composer(didi.Composer):
-        @didi.resource(base_url="http://api")
-        @staticmethod
-        def api_client(base_url: str) -> ApiClient:
-            client = ApiClient(base_url)
+        @didi.resource
+        def api_client(self) -> ApiClient:
+            client = ApiClient(base_url="http://api")
             yield client
             client.close()
 
@@ -105,10 +104,9 @@ def test_combo():
         db = didi.Singleton(Db, dsn=settings.db_dsn)
         repo = didi.Factory(Repo, db=db)
 
-        @didi.resource(base_url=settings.api_base_url)
-        @staticmethod
-        def api_client(base_url: str) -> ApiClient:
-            client = ApiClient(base_url)
+        @didi.resource
+        def api_client(self) -> ApiClient:
+            client = ApiClient(self.settings.api_base_url)
             yield client
             client.close()
 

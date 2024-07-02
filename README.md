@@ -40,10 +40,9 @@ class Composer(didi.Composer):
     db = didi.Singleton(Db, dsn=settings.db_dsn)
     repo = didi.Factory(Repo, db=db)
 
-    @didi.resource(base_url=settings.api_base_url)
-    @staticmethod
-    def api_client(base_url: str) -> ApiClient:
-        client = ApiClient(base_url)
+    @didi.resource
+    def api_client(self) -> ApiClient:
+        client = ApiClient(self.settings.api_base_url)
         yield client
         client.close()
 

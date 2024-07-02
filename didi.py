@@ -81,9 +81,11 @@ class Resource(Lazy):
     def __init__(self, generator_maker, **kwargs):
         self._generator_maker = generator_maker
         self._generator = None
+        self._composer = None
         self._kwargs = kwargs
 
     def __get__(self, composer: Composer, owner: type[Composer]):
+        self._composer = composer
         return self.resolve
 
     def resolve(self):
@@ -93,13 +95,10 @@ class Resource(Lazy):
                 if isinstance(v, Lazy):
                     v = v.resolve()
                 kwargs[k] = v
-            self._generator = self._generator_maker(**kwargs)
+            self._generator = self._generator_maker(self._composer, **kwargs)
             self.REGISTRY[self._generator_maker] = next(self._generator)
         return self.REGISTRY[self._generator_maker]
 
 
-def resource(**kwargs):
-    def decorator(generator_maker):
-        return Resource(generator_maker, **kwargs)
-
-    return decorator
+def resource(generator_maker):
+    return Resource(generator_maker)
